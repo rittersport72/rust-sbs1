@@ -5,7 +5,7 @@ use chrono::offset::TimeZone;
 use chrono::datetime::DateTime;
 
 /// The expected format for combined times and dates
-const DATE_TIME_FORMAT: &'static str = "%Y/%m/d %H:%M:%S%.3f";
+const DATE_TIME_FORMAT: &'static str = "%Y/%m/%d %H:%M:%S%.f";
 
 /// Types of messages
 #[derive(Debug, Clone, PartialEq)]
@@ -185,7 +185,7 @@ pub fn parse(message_string: &str) -> Result<Message, ParseError> {
 
 /// Parses a date component and a time component into a DateTime
 fn parse_date_time(date: &str, time: &str) -> Result<DateTime<Local>, chrono::format::ParseError> {
-    let combined = format!("{} {}", date, time);
+    let combined = format!("{} {}", date.trim(), time.trim());
     Local.datetime_from_str(&combined, DATE_TIME_FORMAT)
 }
 
@@ -221,5 +221,19 @@ mod tests {
         assert_eq!(MessageType::SelectionChange, result.message_type);
         assert!(result.vertical_speed.is_some());
         assert_eq!(-350_f64, result.vertical_speed.unwrap());
+    }
+
+    #[test]
+    fn test_date_time_parse() {
+        let date = "2016/03/11";
+        let time = "21:24:53.351";
+        let result = super::parse_date_time(date, time);
+        match result {
+            Ok(_) => {},
+            Err(e) => {
+                println!("{:?}", e);
+                assert!(false);
+            },
+        }
     }
 }
