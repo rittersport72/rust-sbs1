@@ -167,7 +167,7 @@ pub fn parse(message_string: &str) -> Result<Message, ParseError> {
     message.flight_id = parts[5].parse().ok();
     message.generated = parse_date_time(parts[6], parts[7]).ok();
     message.logged = parse_date_time(parts[8], parts[9]).ok();
-    message.callsign = if parts[10].is_empty() { None } else { Some(String::from(parts[8])) };
+    message.callsign = if parts[10].is_empty() { None } else { Some(String::from(parts[10].trim())) };
     message.altitude = parts[11].parse().ok();
     message.ground_speed = parts[12].parse().ok();
     message.track = parts[13].parse().ok();
